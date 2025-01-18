@@ -7,14 +7,25 @@ import { Badge } from "@/components/ui/badge"
 import { MessageCircle } from 'lucide-react'
 import { Product } from './product'
 import { getProducts } from './utils/getProducts'
+import { getCategories } from './utils/getCategories'
 import badfairyLogo from '../components/logo-badfairy.jpg'
 import Image from 'next/image';
 import { BadfairyLogoSVG } from '@/components/BadfairyLogoSVG'
+import { Playfair_Display } from 'next/font/google'
+
+const playfair_display = Playfair_Display({
+  subsets: ['latin'],
+  display: "swap",
+  style: ["normal", "italic"],
+  })
 
 const getFilteredAndSortedProducts = (products: Product[], categorySelected: string, sortBy: string) => {
   const filtered = categorySelected === 'todos'
     ? products
-    : products.filter(product => product.category.name === categorySelected);
+    // Solo se muestra si el producto esta en alguna de las categorias seleccionadas
+    : products.filter(product =>
+      product.categories.some(category => category.toString() === categorySelected) // Utilizamos `some` en lugar de `forEach`
+    );
 
   // Con slice antes de sort evitamos mutar el array original para que funcione el sort por default
   if (sortBy === 'asc') {
@@ -27,6 +38,7 @@ const getFilteredAndSortedProducts = (products: Product[], categorySelected: str
 
 export default function Catalogo() {
   const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<string[]>([])
   const [categorySelected, setCategorySelected] = useState<string>('todos')
   const [sortBy, setSortBy] = useState<string>('default')
   const [loading, setLoading] = useState(true)
@@ -34,22 +46,23 @@ export default function Catalogo() {
   useEffect(() => {
     const loadProducts = async () => {
       const productsData = await getProducts()
+      // Obtener categorías únicas
+      const categories = await getCategories()
       setProducts(productsData)
+      setCategories(['todos', ...categories])
       setLoading(false)
     }
     loadProducts()
   }, [])
 
-  const categories = ['todos', ...Array.from(new Set(products.map(p => p.category.name)))
-  .sort((a, b) => a.localeCompare(b))
-  ] //orden alfabetico de categorias, pero la primera siempre es 'todos'
-
   const filteredProducts = getFilteredAndSortedProducts(products, categorySelected, sortBy);
 
+  /* Deprecated by Instagram contact preference
   const contactWsp = (product: Product) => {
     const msg = encodeURIComponent(`Hola!, estoy interesado en el producto: ${product.title}`)
     window.open(`https://wa.me/1234567890?text=${msg}`, '_blank')
   }
+  */
 
   const contactIg = () => {
     window.open('https://ig.me/m/badfairy.cl', '_blank')
@@ -64,15 +77,18 @@ export default function Catalogo() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 fade-in">
       <div className="flex justify-center mb-2">
         <BadfairyLogoSVG className='w-40 h-40' />
       </div>
-      <p className='text-xl text-center mb-2'>Categoría</p>
-      <div className="flex justify-center space-x-2 mb-8">
-        
+      <h1 className={`text-6xl font-bold text-center mb-7 ${playfair_display.className} antialiased`}>
+        Catálogo web
+      </h1>
+      <div className="flex justify-center space-x-2 mb-8 flex-wrap">
+
         {categories.map((category) => (
           <Button
+            className='mb-1'
             key={category}
             onClick={() => setCategorySelected(category)}
             variant={categorySelected === category ? "default" : "outline"}
@@ -82,15 +98,14 @@ export default function Catalogo() {
         ))}
       </div>
       <div className='mb-4'>
-        {/*<h1 className="text-3xl font-bold text-center mb-2">Catálogo web Badfairy</h1>*/}
         {/* Filtrar por precio ascendente o descendente o por defecto */}
         <div className='w-full mb-2'>
           <label htmlFor="sortBy" className="text-md">Ordenar por: </label>
-          <select id="sortBy" defaultValue="default" className="p-1 md:p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-pink-400 focus:border-pink-400"
+          <select id="sortBy" defaultValue="default" className="p-1 md:p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 font-bold"
             onChange={e => setSortBy(e.target.value)}>
-            <option value="asc" className='bg-pink-400'>Precio ascendente</option>
-            <option value="desc" className='bg-pink-400'>Precio descendente</option>
-            <option value="default" className='bg-pink-400'>Defecto</option>
+            <option value="asc">Precio <span className='font-bold'>ascendente</span></option>
+            <option value="desc">Precio descendente</option>
+            <option value="default">Defecto</option>
           </select>
         </div>
         <p className="text-center text-sm text-gray-600">
@@ -104,29 +119,40 @@ export default function Catalogo() {
             <CardHeader>
               <CardTitle className="flex justify-between items-center text-xl">
                 {product.title}
-                <Badge variant="secondary">{product.category.name}</Badge>
+                <div className='flex justify-end space-x-2'>
+                {
+                  product.categories.map(category => (
+                    <Badge key={category.toString()} variant="secondary">{category.toString()}</Badge>
+                  ))
+                }
+                </div>
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-grow">
-              <div className="w-full aspect-square mb-4 overflow-hidden rounded-md">
+              <div className="w-full aspect-square mb-4 overflow-hidden rounded-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300">
                 <Image
                   src={product.img}
                   alt={product.title}
                   height={300}
                   width={300}
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full fade-in"
                 />
               </div>
               <p className="text-sm text-gray-600 mb-2">{product.description}</p>
-              <p className="text-2xl font-bold">${product.price}</p>
+              <p className={`text-2xl font-bold`}>
+                {
+                  new Intl.NumberFormat('es-CL', {currency: "CLP", style: "currency"})
+                  .format(product.price)// Precio formateado a moneda chilena
+                }
+              </p>
             </CardContent>
             <CardFooter>
               <Button
-                className="w-full bg-black"
+                className="w-full bg-black transition ease-in-out delay-150 hover:scale-105 duration-100 hover:bg-black"
                 //onClick={() => contactWsp(product)}
                 onClick={() => contactIg()}
               >
-                <MessageCircle className="mr-2 h-4 w-4" />
+                <MessageCircle className="mr-2 h-4 w-4 animate-bounce" />
                 Contactar a Instagram
               </Button>
             </CardFooter>

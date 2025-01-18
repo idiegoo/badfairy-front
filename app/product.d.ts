@@ -18,7 +18,7 @@ export interface Product {
     url: string
   }
   img: string
-  category: {
+  categories: {
     name: string
-  }
+  }[]
 }

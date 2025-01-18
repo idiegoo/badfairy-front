@@ -14,7 +14,7 @@ export const getProducts = async (): Promise<Product[]> => {
         desc: product.description,
         price: product.price,
         img: product.cover.formats.medium?.url || product.cover.url, // Aplica img medium si existe, sino la default
-        category: product.category
+        categories: product.categories.map((category) => category.name)
       }
     )
   )
