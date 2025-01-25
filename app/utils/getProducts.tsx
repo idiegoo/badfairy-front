@@ -1,7 +1,13 @@
 import { Product } from "./product"
 
 export const getProducts = async (url: string): Promise<Product[]> => {
-  const response = await fetch(url).then(resp => resp.json())
+  const response = await fetch(url, {
+    headers:{
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Cache-Control": "max-age=600"
+    }
+  }).then(resp => resp.json())
     .catch(err => console.error(err))
   //console.log("response:", response.data)
   const products = response.data.map((product: Product) => (
