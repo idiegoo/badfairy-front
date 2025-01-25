@@ -1,27 +1,25 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { MessageCircle } from 'lucide-react'
-import { Product } from "./utils/product"
+import { Product } from './utils/product'
 import { getProducts } from './utils/getProducts'
 import { getCategories } from './utils/getCategories'
 import badfairyLogo from '../components/logo-badfairy.jpg'
 import Image from 'next/image';
 import { BadfairyLogoSVG } from '@/components/BadfairyLogoSVG'
 import { Playfair_Display } from 'next/font/google'
-import useSWR, {SWRConfig} from 'swr'
-import { localStorageProvider } from "@/app/utils/localStorageProvider"
-
-const API_URL = process.env.API_URL
 
 const playfair_display = Playfair_Display({
   subsets: ['latin'],
   display: "swap",
   style: ["normal", "italic"],
   })
+
+const API_URL = "https://badfairy-strapi-j4rn9.ondigitalocean.app/api"
 
 const getFilteredAndSortedProducts = (products: Product[], categorySelected: string, sortBy: string) => {
   const filtered = categorySelected === 'todos'
@@ -30,6 +28,7 @@ const getFilteredAndSortedProducts = (products: Product[], categorySelected: str
     : products.filter(product =>
       product.categories.some(category => category.toString() === categorySelected) // Utilizamos `some` en lugar de `forEach`
     );
+
   // Con slice antes de sort evitamos mutar el array original para que funcione el sort por default
   if (sortBy === 'asc') {
     return filtered.slice().sort((a, b) => a.price - b.price);
@@ -40,32 +39,38 @@ const getFilteredAndSortedProducts = (products: Product[], categorySelected: str
 };
 
 export default function Catalogo() {
-  const { data: products, isLoading: isLoading} = useSWR(`${API_URL}/articles?populate=*`, getProducts, {
-    revalidateOnFocus: false,
-    dedupingInterval: 600 // 24 horas
-  })
-  //anadir a categories la categoria "todos"
-  const { data: categories  } = useSWR(`${API_URL}/categories`, getCategories,{
-    revalidateOnFocus: false,
-    dedupingInterval: 600
-  })
-
-  const [categorySelected, setCategorySelected] = useState<string>('todos');
-  const [sortBy, setSortBy] = useState('default');
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-
+  const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<string[]>([])
+  const [categorySelected, setCategorySelected] = useState<string>('todos')
+  const [sortBy, setSortBy] = useState<string>('default')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (products && categories) {
-      setFilteredProducts(getFilteredAndSortedProducts(products, categorySelected, sortBy));
+    const loadProducts = async () => {
+      const productsData = await getProducts(`${API_URL}/articles?populate=*`)
+      // Obtener categorías únicas
+      const categories = await getCategories(`${API_URL}/categories?populate=*`)
+      setProducts(productsData)
+      setCategories(['todos', ...categories])
+      setLoading(false)
     }
-  }, [products, categorySelected, sortBy, categories]);
+    loadProducts()
+  }, [])
+
+  const filteredProducts = getFilteredAndSortedProducts(products, categorySelected, sortBy);
+
+  /* Deprecated by Instagram contact preference
+  const contactWsp = (product: Product) => {
+    const msg = encodeURIComponent(`Hola!, estoy interesado en el producto: ${product.title}`)
+    window.open(`https://wa.me/1234567890?text=${msg}`, '_blank')
+  }
+  */
 
   const contactIg = () => {
     window.open('https://ig.me/m/badfairy.cl', '_blank')
   }
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className='flex h-screen justify-center items-center'>
         <Image src={badfairyLogo} width={300} height={300} alt='' className='animate-pulse'/>
@@ -75,7 +80,6 @@ export default function Catalogo() {
 
   return (
     <main className="container mx-auto px-4 py-8 fade-in">
-      <SWRConfig value={{provider: localStorageProvider }} >
       <div className="flex justify-center mb-2">
         <BadfairyLogoSVG className='w-40 h-40' />
       </div>
@@ -83,15 +87,8 @@ export default function Catalogo() {
         Catálogo web
       </h1>
       <div className="flex justify-center space-x-2 mb-8 flex-wrap">
-        <Button
-          className='mb-1'
-          key={"todos"}
-          onClick={() => setCategorySelected("todos")}
-          variant={categorySelected === "todos" ? "default" : "outline"}
-          >
-            Todos
-          </Button>
-        {categories?.map((category) => (
+
+        {categories.map((category) => (
           <Button
             className='mb-1'
             key={category}
@@ -100,8 +97,7 @@ export default function Catalogo() {
           >
             {category.charAt(0).toUpperCase() + category.slice(1)}
           </Button>
-        ))
-        }
+        ))}
       </div>
       <div className='mb-4'>
         {/* Filtrar por precio ascendente o descendente o por defecto */}
@@ -119,6 +115,7 @@ export default function Catalogo() {
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
         {filteredProducts.map((product) => (
           <Card key={product.id} className="flex flex-col">
             <CardHeader>
@@ -164,7 +161,6 @@ export default function Catalogo() {
           </Card>
         ))}
       </div>
-      </SWRConfig>
     </main>
   )
 }
