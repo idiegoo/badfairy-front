@@ -33,9 +33,11 @@ export default function Catalogo() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loopImages, setLoopImages] = useState<StaticImageData[]>(mobile_images)
 
-  const { data: products, isLoading: isLoading} = useSWR(`${API_URL}/articles?populate=*`, getProducts, {
-    revalidateOnFocus: false,
-    dedupingInterval: 600000 // 10 min
+  const { data: products, isLoading: isLoading} = useSWR(
+    `${API_URL}/articles?populate=*&pagination[start]=0&pagination[limit]=1000`,
+    getProducts, {
+      revalidateOnFocus: false,
+      dedupingInterval: 600000 // 10 min
   })
 
   const { data: categories  } = useSWR(`${API_URL}/categories`, getCategories,{
