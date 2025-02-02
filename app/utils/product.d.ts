@@ -18,6 +18,9 @@ export interface Product {
     url: string
   }
   img: string
+  morePhotos: {
+    url: string
+  }[]
   categories: {
     name: string
   }[]

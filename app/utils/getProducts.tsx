@@ -18,6 +18,7 @@ export const getProducts = async (url: string): Promise<Product[]> => {
         desc: product.description,
         price: product.price,
         img: product.cover.formats.medium?.url || product.cover.url, // Aplica img medium si existe, sino la default
+        morePhotos: product.morePhotos?.map((photo) => photo.url) || null, // Muestra mas fotos solo si existen
         categories: product.categories.map((category) => category.name)
       }
     )
