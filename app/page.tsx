@@ -9,8 +9,7 @@ import { getProducts } from './utils/getProducts'
 import { getCategories } from './utils/getCategories'
 import Image, { StaticImageData } from 'next/image';
 import { BadfairyLogoSVG } from '@/components/BadfairyLogoSVG'
-import useSWR, { SWRConfig } from 'swr'
-import { localStorageProvider } from "@/app/utils/localStorageProvider"
+import useSWR from 'swr'
 import {
   Pantrucata1, PantrucataCollarLentes, PantrucataCollarLentes2, CollarCruz
 } from '@/app/images/home-carrousel/index'
@@ -72,7 +71,6 @@ export default function Catalogo() {
 
   return (
     <main className="container mx-auto px-4 py-8 fade-in">
-      <SWRConfig value={{provider: localStorageProvider }} >
       <div className="relative w-full h-48 md:h-80 overflow-hidden rounded-xl mb-6">
         {/* Carrusel de imágenes */}
         <div
@@ -173,7 +171,7 @@ export default function Catalogo() {
         </Card>
       ))}
     </div>
-    </SWRConfig>
+
     </main>
   )
 }

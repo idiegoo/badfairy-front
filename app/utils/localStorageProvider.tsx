@@ -1,6 +1,10 @@
 import { Cache } from "swr"
 
 export function localStorageProvider(): Cache {
+  if (typeof window === 'undefined') {
+    // Return an empty map if running on the server
+    return new Map();
+  }
   // When initializing, we restore the data from `localStorage` into a map.
   const map = new Map<string, object>(
     JSON.parse(localStorage.getItem('app-cache') || '[]')
