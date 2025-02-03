@@ -37,12 +37,14 @@ export default function Catalogo() {
     `${API_URL}/articles?populate=*&pagination[start]=0&pagination[limit]=1000`,
     getProducts, {
       revalidateOnFocus: false,
-      dedupingInterval: 600000 // 10 min
+      dedupingInterval: 600000, // 10 min
+      revalidateIfStale: false,
   })
 
   const { data: categories  } = useSWR(`${API_URL}/categories`, getCategories,{
     revalidateOnFocus: false,
-    dedupingInterval: 600000 // 10 min
+    dedupingInterval: 600000, // 10 min
+    revalidateIfStale: false,
   })
 
   useEffect(() => {
