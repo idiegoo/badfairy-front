@@ -12,16 +12,20 @@ const open_sans = Open_Sans({
 
 export const metadata: Metadata = {
   title: "Catálogo web Badfairy",
-  description: "Catálogo de la tienda, galería de fotos y más!",
+  description: "Catálogo web de la tienda @badfairy.cl",
   authors: [
     {
       name: "Diego Ramirez"
     },
     {
       name: "Tamara Osorio"
+    },
+    {
+      name: "Odin"
     }
   ],
   creator: "Diego Ramirez",
+  keywords: "badfairy, catalogo, bisuteria, joyeria, accesorios, moda, chile",
 };
 
 export default function RootLayout({
@@ -34,6 +38,7 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="google-site-verification" content="7mFFOhGlDc9LNtEQfNzvBezn1Gi1BIEmFhzL3Rdop6E" />
         <link rel="icon" href="/favicon.ico" />
         <title>Catálogo web Badfairy</title>
       </head>
