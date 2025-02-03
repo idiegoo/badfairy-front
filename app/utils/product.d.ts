@@ -23,5 +23,6 @@ export interface Product {
   }[]
   categories: {
     name: string
-  }[]
+  }[],
+  documentId: string
 }

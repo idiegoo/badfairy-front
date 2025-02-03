@@ -32,18 +32,16 @@ export default function Catalogo() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loopImages, setLoopImages] = useState<StaticImageData[]>(mobile_images)
 
-  const { data: products, isLoading: isLoading} = useSWR(
+  const { data: products, isLoading: isLoading } = useSWR(
     `${API_URL}/articles?populate=*&pagination[start]=0&pagination[limit]=1000`,
     getProducts, {
       revalidateOnFocus: false,
       dedupingInterval: 600000, // 10 min
-      revalidateIfStale: false,
   })
 
-  const { data: categories  } = useSWR(`${API_URL}/categories`, getCategories,{
+  const { data: categories } = useSWR(`${API_URL}/categories`, getCategories,{
     revalidateOnFocus: false,
     dedupingInterval: 600000, // 10 min
-    revalidateIfStale: false,
   })
 
   useEffect(() => {
@@ -143,6 +141,7 @@ export default function Catalogo() {
           <CardContent className="flex-grow">
             <div className="w-full aspect-square mb-4 overflow-hidden rounded-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300">
               <Image
+                unoptimized
                 src={product.img}
                 alt={product.title}
                 quality={100}

@@ -1,3 +1,4 @@
+import { mutate } from "swr"
 export const getCategories = async (url:string): Promise<string[]> => {
   const response = await fetch(url,{
     method: 'GET',
@@ -13,5 +14,6 @@ export const getCategories = async (url:string): Promise<string[]> => {
       .map((category: { name: string }) => category.name) // Asegurarse de extraer `name`
       .sort((a: string, b: string) => a.localeCompare(b)); // Ordenar alfabéticamente
   //console.log("dataaa:", categories)
+  mutate(url, categories, false) // Actualiza el cache de SWR con solo los que faltan
   return categories
 }

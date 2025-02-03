@@ -1,3 +1,4 @@
+import { mutate } from "swr"
 import { Product } from "./product"
 
 export const getProducts = async (url: string): Promise<Product[]> => {
@@ -14,6 +15,7 @@ export const getProducts = async (url: string): Promise<Product[]> => {
       //alternar img dependiendo del tamano del dispositivo del user
       {
         id: product.id,
+        documentId: product.documentId,
         title: product.title,
         desc: product.description,
         price: product.price,
@@ -23,6 +25,7 @@ export const getProducts = async (url: string): Promise<Product[]> => {
       }
     )
   )
+  mutate(url, products, false) // Actualiza el cache de SWR con solo los que faltan
   //console.log("data:", products)
   return products
 }
