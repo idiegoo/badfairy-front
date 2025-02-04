@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { MessageCircle } from 'lucide-react'
@@ -32,9 +32,18 @@ export default function Catalogo() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loopImages, setLoopImages] = useState<StaticImageData[]>(mobile_images)
 
+  // Loading state por cada foto independiente
+  const loadingStatesRef = useRef<{ [key: string]: boolean }>({})
+  // Forzar re-render cuando el estado de carga cambie
+  const [, forceRender] = useState(0);
+
+  const handleImageLoad = (id: number) => {
+    loadingStatesRef.current[id] = true; // Marcar imagen como cargada
+    forceRender((prev) => prev + 1); // Forzar re-render
+  };
+
   const { data: products, isLoading: isLoading } = useSWR(
-    `${API_URL}/articles?populate=*&pagination[start]=0&pagination[limit]=1000`,
-    getProducts, {
+    `${API_URL}/articles?populate=*&pagination[start]=0&pagination[limit]=1000`, getProducts, {
       revalidateOnFocus: false,
       dedupingInterval: 600000, // 10 min
   })
@@ -77,12 +86,7 @@ export default function Catalogo() {
         >
           {loopImages.map((image, index) => (
             <div key={index} className="flex-shrink-0 w-full h-full relative">
-              <Image
-                src={image}
-                quality={100}
-                alt={`Slide ${index + 1}`}
-                fill
-                className="object-cover"
+              <Image unoptimized src={image} alt={`Slide ${index + 1}`} fill className="object-cover"
               />
             </div>
           ))}
@@ -140,15 +144,19 @@ export default function Catalogo() {
           </CardHeader>
           <CardContent className="flex-grow">
             <div className="w-full aspect-square mb-4 overflow-hidden rounded-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300">
+              {
+                !loadingStatesRef.current[product.id] ? (
+                  <BadfairyLogoSVG className="w-full h-full animate-pulse" fill="black" />
+                ) : null}
               <Image
                 unoptimized
                 src={product.img}
                 alt={product.title}
+                onLoad={() => handleImageLoad(product.id)}
                 quality={100}
                 height={300}
                 width={300}
-                className="object-cover w-full h-full fade-in"
-              />
+                className="object-cover w-full h-full fade-in"/>
             </div>
             <p className="text-sm text-gray-600 mb-2">{product.description}</p>
             <p className={`text-2xl font-bold`}>
@@ -170,7 +178,6 @@ export default function Catalogo() {
         </Card>
       ))}
     </div>
-
     </main>
   )
 }
