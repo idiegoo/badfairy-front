@@ -17,8 +17,8 @@ const Carousel = ({ images }: { images: Photo[] }) => {
   return (
     <div className="relative w-full max-w-4xl mx-auto md:w-96 md:h-full">
       <div className="relative overflow-hidden w-full h-0 pb-[120%] md:w-96 md:h-96">
-        {images.map((image, index) => {
-          return(
+        {images.length > 1 ? (
+          images.map((image, index) => (
             <div
               key={index}
               className={`absolute inset-0 transition-opacity duration-500 ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}
@@ -30,10 +30,19 @@ const Carousel = ({ images }: { images: Photo[] }) => {
                 className="w-full h-full object-cover rounded-2xl"
                 unoptimized
               />
-            </div>)
-            }
-          )
-        }
+            </div>
+          ))
+        ) : (
+          <div className="absolute inset-0 transition-opacity duration-500 opacity-100">
+            <Image
+              src={images[0].url}
+              alt="Single Slide"
+              fill
+              className="w-full h-full object-cover rounded-2xl"
+              unoptimized
+            />
+          </div>
+        )}
       </div>
       <button
         className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 opacity-50 text-white p-2 rounded"
