@@ -1,5 +1,6 @@
 export interface Product {
   id: number
+  slug: string
   title: string
   description: string
   price: number
@@ -25,4 +26,11 @@ export interface Product {
     name: string
   }[],
   documentId: string
+}
+
+export interface Photo {
+  url: string
+  name: string
+  width: number
+  height: number
 }
