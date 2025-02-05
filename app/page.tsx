@@ -14,6 +14,7 @@ import {
   Pantrucata1, PantrucataCollarLentes, PantrucataCollarLentes2, CollarCruz
 } from '@/app/images/home-carrousel/index'
 import { getFilteredAndSortedProducts } from "./utils/getFilteredAndSortedProducts"
+import { useRouter } from "next/navigation"
 
 const API_URL = "https://badfairy-strapi-j4rn9.ondigitalocean.app/api"
 
@@ -31,6 +32,7 @@ export default function Catalogo() {
   const [sortBy, setSortBy] = useState('default');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loopImages, setLoopImages] = useState<StaticImageData[]>(mobile_images)
+  const router = useRouter()
 
   // Loading state por cada foto independiente
   const loadingStatesRef = useRef<{ [key: string]: boolean }>({})
@@ -166,7 +168,14 @@ export default function Catalogo() {
               }
             </p>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex flex-col space-y-2">
+            {/* Agrega aqui un boton para ver detalles de color celeste*/}
+            <Button
+              className="w-full h-12 bg-slate-100 font-bold shadow-lg text-black transition ease-in-out delay-150 hover:scale-105 duration-100 hover:bg-slate-200"
+              onClick={() => router.push(`/product/${product.slug}`)}
+            >
+              Ver detalles
+            </Button>
             <Button
               className="w-full h-12 bg-black transition ease-in-out delay-150 hover:scale-105 duration-100 hover:bg-black"
               onClick={() => contactIg()}

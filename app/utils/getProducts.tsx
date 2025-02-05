@@ -16,6 +16,7 @@ export const getProducts = async (url: string): Promise<Product[]> => {
       {
         id: product.id,
         documentId: product.documentId,
+        slug: product.slug,
         title: product.title,
         desc: product.description,
         price: product.price,
