@@ -1,6 +1,6 @@
 "use client"
 import { getProductBySlug } from "@/lib/api";
-import Carousel from "@/components/ui/carousel";
+import { Carousel } from "@/components/ui/carousel";
 import { BadfairyLogoSVG } from "@/components/BadfairyLogoSVG";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
