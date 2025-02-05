@@ -160,7 +160,6 @@ export default function Catalogo() {
                 width={300}
                 className="object-cover w-full h-full fade-in"/>
             </div>
-            <p className="text-sm text-gray-600 mb-2">{product.description}</p>
             <p className={`text-2xl font-bold`}>
               {
                 new Intl.NumberFormat('es-CL', {currency: "CLP", style: "currency"})
