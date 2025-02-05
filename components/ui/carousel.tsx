@@ -15,9 +15,8 @@ const Carousel = ({ images }: { images: Photo[] }) => {
   };
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto md:w-96 md:h-96">
-      {/* Corregir pb en desktop (md) */}
-      <div className="relative overflow-hidden w-full h-0 pb-[120%] md:pb-0 md:w-96 md:h-96">
+    <div className="relative w-full max-w-4xl mx-auto md:w-96 md:h-full">
+      <div className="relative overflow-hidden w-full h-0 pb-[120%] md:w-96 md:h-96">
         {images.map((image, index) => {
           return(
             <div

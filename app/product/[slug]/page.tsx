@@ -67,7 +67,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         {/* Carrusel de imágenes */}
           <Carousel images={photos} />
         </div>
-        <div className="md:w-1/2 lg:ml-8 md:ml-6 mt-6 md:mt-0">
+        <div className="md:w-1/2 lg:ml-8 md:ml-6 mt-6 md:mt-0 w-full">
           <div className="border-b border-gray-200 pb-6">
             <h1 className="text-xl lg:text-2xl font-semibold text-gray-800">{product.title}</h1>
             <p className="text-xl text-gray-800 mt-2">
