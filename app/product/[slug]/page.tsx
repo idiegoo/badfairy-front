@@ -8,6 +8,7 @@ import { Product } from "@/app/utils/product";
 import { Photo } from "@/app/utils/product";
 import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
+import useSWR from "swr";
 
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -20,11 +21,15 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     window.open("https://ig.me/m/badfairy.cl", "_blank");
   };
 
+  const { data: productData } = useSWR(slug, getProductBySlug, {
+    revalidateOnFocus: false,
+    dedupingInterval: 600000, // 10 min
+  });
+
   useEffect(() => {
     const fetchProduct = async () => {
-      const productData = await getProductBySlug(slug);
       setIsLoading(false);
-      setProduct(productData);
+      setProduct(await productData);
       setPhotos(productData.morePhotos?.length ? productData.morePhotos : [productData.cover.formats.small])
     };
     fetchProduct();
