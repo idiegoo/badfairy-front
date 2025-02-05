@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { Open_Sans } from 'next/font/google'
 import "./globals.css";
 import Providers from "./providers";
+import Header from "./header";
 
 const open_sans = Open_Sans({
   subsets: ['latin'],
@@ -46,6 +47,7 @@ export default function RootLayout({
       //poniendola en italic
         className={`${open_sans.className}`}
       >
+        <Header />
         <Providers>
           {children}
         </Providers>
