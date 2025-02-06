@@ -1,6 +1,6 @@
 "use client"
 import { getProductBySlug } from "@/lib/api";
-import { Carousel } from "@/components/ui/carousel";
+import { Carousel } from "@/components/ui/carouselProducts";
 import { BadfairyLogoSVG } from "@/components/BadfairyLogoSVG";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
@@ -78,7 +78,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             </Button>
             <div className="mt-7">
               <p className="text-base text-gray-600">Descripción:</p>
-              <h3 className="text-base text-gray-600 mt-2" style={{whiteSpace: 'pre-wrap'}}>{product.description}</h3>
+              <h3 className="text-base text-gray-600 mt-2 whitespace-pre-wrap">{product.description}</h3>
             </div>
           </div>
         </div>

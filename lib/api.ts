@@ -1,4 +1,5 @@
 import { mutate } from "swr";
+import { GallerySession } from "@/app/galeria/gallery";
 
 const API_URL = "https://badfairy-strapi-j4rn9.ondigitalocean.app/api";
 
@@ -36,3 +37,12 @@ export async function getProductBySlug(slug: string) {
   return data;
 }
 
+export async function getGalleryPhotos(sessionName:string): Promise<GallerySession> {
+  const res = await fetch(
+    `${API_URL}/photo-sessions?filters[sessionName][$eq]=${sessionName}&populate=images`)
+  if (!res.ok) {
+    throw new Error("Failed to fetch photos")
+  }
+  const data = (await res.json()).data[0]
+  return data
+}
