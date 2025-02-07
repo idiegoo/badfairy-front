@@ -47,10 +47,10 @@ const Header = () => {
         } md:hidden`}
       >
         <nav className="flex flex-col items-center h-full space-y-8 pt-24 z-50">
-          <Link href="/" className="text-lg hover:text-gray-300">
+          <Link href="/" className="text-lg hover:text-gray-300" onClick={() => setIsMenuOpen(false)}>
             Catálogo
           </Link>
-          <Link href="/galeria" className="text-lg hover:text-gray-300">
+          <Link href="/galeria" className="text-lg hover:text-gray-300" onClick={() => setIsMenuOpen(false)}>
             Galería
           </Link>
           <a

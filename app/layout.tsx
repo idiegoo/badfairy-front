@@ -25,6 +25,7 @@ export const metadata: Metadata = {
       name: "Odin"
     }
   ],
+  applicationName: "Badfairy",
   creator: "Diego Ramirez",
   keywords: "badfairy, catalogo, bisuteria, joyeria, accesorios, moda, chile",
 };
