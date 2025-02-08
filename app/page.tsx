@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { MessageCircle } from 'lucide-react'
@@ -35,13 +35,10 @@ export default function Catalogo() {
   const router = useRouter()
 
   // Loading state por cada foto independiente
-  const loadingStatesRef = useRef<{ [key: string]: boolean }>({})
-  // Forzar re-render cuando el estado de carga cambie
-  const [, forceRender] = useState(0);
+  const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
 
   const handleImageLoad = (id: number) => {
-    loadingStatesRef.current[id] = true; // Marcar imagen como cargada
-    forceRender((prev) => prev + 1); // Forzar re-render
+    setLoadingStates((prev) => ({ ...prev, [id]: true }));
   };
 
   const { data: products, isLoading: isLoading } = useSWR(
@@ -147,7 +144,7 @@ export default function Catalogo() {
           <CardContent className="flex-grow">
             <div className="w-full aspect-square mb-4 overflow-hidden rounded-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300">
               {
-                !loadingStatesRef.current[product.id] ? (
+                !loadingStates[product.id] ? (
                   <BadfairyLogoSVG className="w-full h-full animate-pulse" fill="black" />
                 ) : null}
               <Image
